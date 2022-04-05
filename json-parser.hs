@@ -132,20 +132,3 @@ showJson (JObject obj) = "{" ++
                          intercalate "," (keyValuePair <$> Map.toList obj) ++
                          "}"
   where keyValuePair (k,v) = show k ++ ":" ++ showJson v
-
--- test json string
-jsonStr :: String
-jsonStr = [r|
-{
-  "x" : 3.14,
-  "y" : [
-    2,
-    true,
-    "Using a Unicode Character: \n\uABCD"
-  ],
-  "z" : null
-}
-|]
-
-main :: IO ()
-main = putStrLn $ showJson $ fromRight JNull $ parseJson jsonStr
