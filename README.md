@@ -40,7 +40,7 @@ main :: IO ()
 main = putStrLn $ showJson $ fromRight JNull $ parseJson jsonStr
 ```
 
-A ```typeof``` function is also exported, which is equivalent to the ```typeof``` operator in JavaScript.
+A `typeof` function is also exported, which is equivalent to the ```typeof``` operator in JavaScript.
 It returns the primitive JavaScript data type corresponding to a value of type ```Json```. 
 
 For example:
@@ -55,5 +55,23 @@ For example:
 "array"
 > typeof $ fromRight $ parseJson "{\"x\": 2 }"
 "object"
+```
+
+`isPrimitive`, `isArray` and `isObject` functions are also exported, which work on the parsed JSON value according to JavaScript rules:
+- numbers, strings, booleans and `null` are primtives
+- `null` is considered as an object
+
+```haskell
+> fromRight (Right r) = r
+> isObject $ fromRight $ parseJson "null" 
+True
+> isPrimitive $ fromRight $ parseJson "-3.14"
+True
+> isObject $ fromRight $ parseJson "[ \"hello\", \"world\", true ]"
+False
+> isObject $ fromRight $ parseJson "{\"x\": 2 }"
+True
+> isArray $ fromRight $ parseJson "[ \"hello\", \"world\", true ]"
+True
 ```
 

@@ -6,7 +6,7 @@
 {-# LANGUAGE QuasiQuotes #-}          -- Required for raw strings library
 {-# LANGUAGE DeriveDataTypeable #-}   -- Required for implementing typeof
 
-module Data.Json (Json (..), typeof, parseJson, showJson) where
+module Data.Json (Json (..), parseJson, showJson, typeof, isPrimitive, isArray, isObject) where
 
 import Control.Applicative ((<|>))
 import Control.Monad (replicateM)
@@ -38,10 +38,24 @@ data Json = JString  String |
      deriving (Eq, Show, Data, Typeable)
 
 -- Equivalent to JavaScript's typeof operator
--- Returns the JavaScript primitive type of the JSON object
+-- Returns the JavaScript type of the JSON object
 typeof :: Json -> String
 typeof json = toLower fstChar : rest
   where ('J' : fstChar : rest) = show $ toConstr json
+
+isPrimitive :: Json -> Bool
+isPrimitive (JArray _)  = False
+isPrimitive (JObject _) = False
+isPrimitive _           = True
+
+isArray :: Json -> Bool
+isArray (JArray _) = True
+isArray _          = False 
+
+isObject :: Json -> Bool
+isObject JNull       = True
+isObject (JObject _) = True
+isObject _           = False
 
 -- TODO: automatic testing
 -- TODO: better error messages
